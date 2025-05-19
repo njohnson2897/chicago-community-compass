@@ -18,9 +18,10 @@ import {
   Menu as MenuIcon,
   Map as MapIcon,
   Info as InfoIcon,
+  Home as HomeIcon,
 } from "@mui/icons-material";
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 function Layout({ children }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -33,35 +34,35 @@ function Layout({ children }) {
   };
 
   const menuItems = [
-    { text: "Map", icon: <MapIcon />, path: "/" },
+    { text: "Home", icon: <HomeIcon />, path: "/" },
+    { text: "Map", icon: <MapIcon />, path: "/map" },
     { text: "About", icon: <InfoIcon />, path: "/about" },
   ];
 
   const drawer = (
-    <div>
-      <Toolbar>
-        <Typography variant="h6" noWrap component="div">
-          Chicago Community Compass
-        </Typography>
-      </Toolbar>
-      <List>
-        {menuItems.map((item) => (
-          <ListItem
-            button
-            key={item.text}
-            onClick={() => {
-              navigate(item.path);
-              if (isMobile) {
-                setMobileOpen(false);
-              }
-            }}
-          >
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
-          </ListItem>
-        ))}
-      </List>
-    </div>
+    <List sx={{ pt: 2 }}>
+      {menuItems.map((item) => (
+        <ListItem
+          button
+          key={item.text}
+          onClick={() => {
+            navigate(item.path);
+            if (isMobile) {
+              setMobileOpen(false);
+            }
+          }}
+          sx={{
+            py: 1.5,
+            "&:hover": {
+              backgroundColor: "action.hover",
+            },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
+          <ListItemText primary={item.text} />
+        </ListItem>
+      ))}
+    </List>
   );
 
   return (
@@ -97,12 +98,13 @@ function Layout({ children }) {
           open={isMobile ? mobileOpen : true}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
           }}
           sx={{
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
+              borderRight: "1px solid rgba(0, 0, 0, 0.12)",
             },
           }}
         >

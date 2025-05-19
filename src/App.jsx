@@ -9,6 +9,7 @@ import Layout from "./components/Layout";
 
 // Pages
 import Home from "./pages/Home";
+import Map from "./pages/Map";
 import ServiceDetails from "./pages/ServiceDetails";
 import About from "./pages/About";
 
@@ -21,6 +22,7 @@ function App() {
           <Layout>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/map" element={<Map />} />
               <Route path="/service/:id" element={<ServiceDetails />} />
               <Route path="/about" element={<About />} />
             </Routes>
