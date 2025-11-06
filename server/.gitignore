@@ -18,3 +18,12 @@ prisma/migrations/
 .DS_Store
 Thumbs.db
 
+# Windows
+nul
+con
+prn
+aux
+
+# Test files
+test-*.js
+

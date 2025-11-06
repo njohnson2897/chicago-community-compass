@@ -20,6 +20,7 @@ import {
   Info as InfoIcon,
   Home as HomeIcon,
   Business as BusinessIcon,
+  AdminPanelSettings as AdminIcon,
 } from "@mui/icons-material";
 import { authAPI } from "../services/api";
 
@@ -36,12 +37,21 @@ function Layout({ children }) {
   };
 
   const provider = authAPI.getProvider();
+  const admin = localStorage.getItem("admin");
 
   const menuItems = [
     { text: "Home", icon: <HomeIcon />, path: "/" },
     { text: "Map", icon: <MapIcon />, path: "/map" },
     { text: "About", icon: <InfoIcon />, path: "/about" },
-    ...(provider
+    ...(admin
+      ? [
+          {
+            text: "Admin Dashboard",
+            icon: <AdminIcon />,
+            path: "/admin/dashboard",
+          },
+        ]
+      : provider
       ? [
           {
             text: "Provider Portal",

@@ -149,7 +149,7 @@ export const eventsAPI = {
   deleteEvent: (id) => api.delete(`/events/${id}`),
 };
 
-// Admin API (for future admin panel)
+// Admin API
 export const adminAPI = {
   // Get all providers
   getProviders: (params = {}) => {
@@ -168,10 +168,50 @@ export const adminAPI = {
     });
   },
 
+  // Get single provider
+  getProvider: (id) => {
+    const adminToken = localStorage.getItem('adminToken');
+    return api.get(`/admin/providers/${id}`, {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    });
+  },
+
   // Create provider
   createProvider: (data) => {
     const adminToken = localStorage.getItem('adminToken');
     return api.post('/admin/providers', data, {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    });
+  },
+
+  // Update provider
+  updateProvider: (id, data) => {
+    const adminToken = localStorage.getItem('adminToken');
+    return api.put(`/admin/providers/${id}`, data, {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    });
+  },
+
+  // Delete provider
+  deleteProvider: (id) => {
+    const adminToken = localStorage.getItem('adminToken');
+    return api.delete(`/admin/providers/${id}`, {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    });
+  },
+
+  // Get admin profile
+  getProfile: () => {
+    const adminToken = localStorage.getItem('adminToken');
+    return api.get('/admin/me', {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },

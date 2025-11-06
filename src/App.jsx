@@ -14,7 +14,10 @@ import ServiceDetails from "./pages/ServiceDetails";
 import About from "./pages/About";
 import ProviderLogin from "./pages/ProviderLogin";
 import ProviderDashboard from "./pages/ProviderDashboard";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminProtectedRoute from "./components/AdminProtectedRoute";
 
 function App() {
   return (
@@ -39,6 +42,19 @@ function App() {
                     <ProviderDashboard />
                   </Layout>
                 </ProtectedRoute>
+              }
+            />
+            
+            {/* Admin routes */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route
+              path="/admin/dashboard"
+              element={
+                <AdminProtectedRoute>
+                  <Layout>
+                    <AdminDashboard />
+                  </Layout>
+                </AdminProtectedRoute>
               }
             />
           </Routes>
