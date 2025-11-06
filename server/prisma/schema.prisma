@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Provider (User) Model - Only providers need accounts
+model Provider {
+  id                String    @id @default(uuid())
+  email             String    @unique
+  passwordHash      String    @map("password_hash")
+  organizationName  String    @map("organization_name")
+  firstName         String?   @map("first_name")
+  lastName          String?   @map("last_name")
+  phone             String?
+  verified          Boolean   @default(false)
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  services          Service[]
+  events            Event[]
+
+  @@map("providers")
+}
+
+// Service Model - Can be created by providers or from Chicago Open Data
+model Service {
+  id                    String    @id @default(uuid())
+  name                  String
+  description           String?   @db.Text
+  category              String
+  subcategory           String?
+  address               String
+  city                  String    @default("Chicago")
+  state                 String    @default("IL")
+  zip                   String?
+  latitude              Decimal?  @db.Decimal(10, 8)
+  longitude             Decimal?  @db.Decimal(11, 8)
+  phone                 String?
+  email                 String?
+  website               String?
+  hoursOfOperation      String?   @map("hours_of_operation") @db.Text
+  eligibilityRequirements String? @map("eligibility_requirements") @db.Text
+  languagesSpoken       String[]  @map("languages_spoken")
+  accessibilityFeatures String[]  @map("accessibility_features")
+  
+  // Status and source
+  status                String    @default("active") // active, pending, inactive
+  verified              Boolean   @default(false)
+  source                String    @default("provider") // provider, chicago_data
+  externalId            String?   @map("external_id") // For Chicago Data Portal services
+  
+  // Provider relation (nullable for Chicago Data services)
+  providerId            String?   @map("provider_id")
+  provider              Provider? @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  
+  // Metadata
+  viewCount             Int       @default(0) @map("view_count")
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  photos                ServicePhoto[]
+  events                Event[]
+
+  @@index([category])
+  @@index([status])
+  @@index([providerId])
+  @@index([latitude, longitude])
+  @@map("services")
+}
+
+// Service Photos
+model ServicePhoto {
+  id          String   @id @default(uuid())
+  serviceId   String   @map("service_id")
+  service     Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  url         String
+  caption     String?
+  isPrimary   Boolean  @default(false) @map("is_primary")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([serviceId])
+  @@map("service_photos")
+}
+
+// Events - Upcoming offerings from providers
+model Event {
+  id                  String    @id @default(uuid())
+  title               String
+  description         String?   @db.Text
+  serviceId           String?   @map("service_id")
+  service             Service?  @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  providerId          String    @map("provider_id")
+  provider            Provider  @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  eventType           String?   @map("event_type") // workshop, clinic, distribution, etc.
+  startDate           DateTime  @map("start_date")
+  endDate             DateTime? @map("end_date")
+  locationType        String    @default("in_person") @map("location_type") // in_person, virtual, hybrid
+  address             String?   @db.Text
+  virtualLink         String?   @map("virtual_link")
+  capacity            Int?
+  registrationRequired Boolean  @default(false) @map("registration_required")
+  registrationUrl     String?   @map("registration_url")
+  status              String    @default("upcoming") @map("status") // upcoming, ongoing, completed, cancelled
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
+
+  @@index([serviceId])
+  @@index([providerId])
+  @@index([startDate])
+  @@index([status])
+  @@map("events")
+}
+
