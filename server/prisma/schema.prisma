@@ -10,7 +10,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Provider (User) Model - Only providers need accounts
+// Admin Model - Platform administrators
+model Admin {
+  id                String    @id @default(uuid())
+  email             String    @unique
+  passwordHash      String    @map("password_hash")
+  firstName         String?   @map("first_name")
+  lastName          String?   @map("last_name")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  providersCreated  Provider[]
+
+  @@map("admins")
+}
+
+// Provider (User) Model - Only providers need accounts (created by admins)
 model Provider {
   id                String    @id @default(uuid())
   email             String    @unique
@@ -19,14 +34,17 @@ model Provider {
   firstName         String?   @map("first_name")
   lastName          String?   @map("last_name")
   phone             String?
-  verified          Boolean   @default(false)
+  verified          Boolean   @default(true) // Set to true when created by admin
   createdAt         DateTime  @default(now()) @map("created_at")
   updatedAt         DateTime  @updatedAt @map("updated_at")
+  createdByAdminId  String?   @map("created_by_admin_id")
+  createdByAdmin    Admin?    @relation(fields: [createdByAdminId], references: [id], onDelete: SetNull)
 
   // Relations
   services          Service[]
   events            Event[]
 
+  @@index([createdByAdminId])
   @@map("providers")
 }
 

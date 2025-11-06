@@ -12,6 +12,9 @@ import Home from "./pages/Home";
 import Map from "./pages/Map";
 import ServiceDetails from "./pages/ServiceDetails";
 import About from "./pages/About";
+import ProviderLogin from "./pages/ProviderLogin";
+import ProviderDashboard from "./pages/ProviderDashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -19,14 +22,26 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Router>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/map" element={<Map />} />
-              <Route path="/service/:id" element={<ServiceDetails />} />
-              <Route path="/about" element={<About />} />
-            </Routes>
-          </Layout>
+          <Routes>
+            {/* Public routes with layout */}
+            <Route path="/" element={<Layout><Home /></Layout>} />
+            <Route path="/map" element={<Layout><Map /></Layout>} />
+            <Route path="/service/:id" element={<Layout><ServiceDetails /></Layout>} />
+            <Route path="/about" element={<Layout><About /></Layout>} />
+            
+            {/* Provider routes without layout */}
+            <Route path="/provider/login" element={<ProviderLogin />} />
+            <Route
+              path="/provider/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ProviderDashboard />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
         </Router>
       </ThemeProvider>
     </Provider>

@@ -19,7 +19,9 @@ import {
   Map as MapIcon,
   Info as InfoIcon,
   Home as HomeIcon,
+  Business as BusinessIcon,
 } from "@mui/icons-material";
+import { authAPI } from "../services/api";
 
 const drawerWidth = 200;
 
@@ -33,10 +35,27 @@ function Layout({ children }) {
     setMobileOpen(!mobileOpen);
   };
 
+  const provider = authAPI.getProvider();
+
   const menuItems = [
     { text: "Home", icon: <HomeIcon />, path: "/" },
     { text: "Map", icon: <MapIcon />, path: "/map" },
     { text: "About", icon: <InfoIcon />, path: "/about" },
+    ...(provider
+      ? [
+          {
+            text: "Provider Portal",
+            icon: <BusinessIcon />,
+            path: "/provider/dashboard",
+          },
+        ]
+      : [
+          {
+            text: "Provider Login",
+            icon: <BusinessIcon />,
+            path: "/provider/login",
+          },
+        ]),
   ];
 
   const drawer = (

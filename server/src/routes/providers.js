@@ -1,12 +1,12 @@
 import express from 'express';
-import { authenticateToken } from '../middleware/auth.js';
+import { authenticateProvider } from '../middleware/auth.js';
 import { PrismaClient } from '@prisma/client';
 
 const router = express.Router();
 const prisma = new PrismaClient();
 
 // Get current provider profile (protected)
-router.get('/me', authenticateToken, async (req, res, next) => {
+router.get('/me', authenticateProvider, async (req, res, next) => {
   try {
     const provider = await prisma.provider.findUnique({
       where: { id: req.provider.id },
@@ -40,7 +40,7 @@ router.get('/me', authenticateToken, async (req, res, next) => {
 });
 
 // Update provider profile (protected)
-router.put('/me', authenticateToken, async (req, res, next) => {
+router.put('/me', authenticateProvider, async (req, res, next) => {
   try {
     const { organizationName, firstName, lastName, phone } = req.body;
 
@@ -74,7 +74,7 @@ router.put('/me', authenticateToken, async (req, res, next) => {
 });
 
 // Get provider's services (protected)
-router.get('/me/services', authenticateToken, async (req, res, next) => {
+router.get('/me/services', authenticateProvider, async (req, res, next) => {
   try {
     const services = await prisma.service.findMany({
       where: { providerId: req.provider.id },
@@ -101,7 +101,7 @@ router.get('/me/services', authenticateToken, async (req, res, next) => {
 });
 
 // Get provider's events (protected)
-router.get('/me/events', authenticateToken, async (req, res, next) => {
+router.get('/me/events', authenticateProvider, async (req, res, next) => {
   try {
     const events = await prisma.event.findMany({
       where: { providerId: req.provider.id },

@@ -1,6 +1,6 @@
 import express from 'express';
 import { body, validationResult, query } from 'express-validator';
-import { authenticateToken } from '../middleware/auth.js';
+import { authenticateProvider } from '../middleware/auth.js';
 import { PrismaClient } from '@prisma/client';
 
 const router = express.Router();
@@ -175,7 +175,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // Create service (protected - providers only)
-router.post('/', authenticateToken, [
+router.post('/', authenticateProvider, [
   body('name').trim().notEmpty(),
   body('category').trim().notEmpty(),
   body('address').trim().notEmpty(),
@@ -228,7 +228,7 @@ router.post('/', authenticateToken, [
 });
 
 // Update service (protected - only by owner)
-router.put('/:id', authenticateToken, async (req, res, next) => {
+router.put('/:id', authenticateProvider, async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -288,7 +288,7 @@ router.put('/:id', authenticateToken, async (req, res, next) => {
 });
 
 // Delete service (protected - only by owner)
-router.delete('/:id', authenticateToken, async (req, res, next) => {
+router.delete('/:id', authenticateProvider, async (req, res, next) => {
   try {
     const { id } = req.params;
 
